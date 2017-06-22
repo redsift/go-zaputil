@@ -124,3 +124,29 @@ func InstanceID() zapcore.Field {
 	}
 	return zap.String("instance", id)
 }
+
+func ParseLevel(s string) zapcore.Level {
+	l := zapcore.InfoLevel
+
+	if err := l.Set(s); err == nil {
+		return l
+	}
+
+	// map syslog level to zaplevel
+	switch s {
+	case "0":
+		return zapcore.PanicLevel
+	case "1", "2":
+		return zapcore.FatalLevel
+	case "3":
+		return zapcore.ErrorLevel
+	case "4":
+		return zapcore.WarnLevel
+	case "5":
+		return zapcore.InfoLevel
+	case "6", "7":
+		return zapcore.DebugLevel
+	default:
+		return zapcore.InfoLevel
+	}
+}
